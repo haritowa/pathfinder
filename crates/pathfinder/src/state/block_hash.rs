@@ -55,7 +55,7 @@ pub fn verify_block_hash(
             num_transactions,
             transaction_commitment,
             block.parent_block_hash,
-            *chain.starknet_chain_id(),
+            chain.starknet_chain_id(),
         );
         block_hash == expected_block_hash
     } else {
@@ -96,9 +96,8 @@ pub fn verify_block_hash(
 mod meta {
     use std::ops::Range;
 
-    use stark_hash::StarkHash;
-
     use crate::core::{Chain, SequencerAddress, StarknetBlockNumber};
+    use crate::starkhash;
 
     /// Metadata about Starknet chains we use for block hash calculation
     ///
@@ -143,29 +142,21 @@ mod meta {
         }
     }
 
-    lazy_static::lazy_static! {
-        static ref TESTNET_METAINFO: BlockHashMetaInfo = BlockHashMetaInfo {
-            first_0_7_block: StarknetBlockNumber(47028),
-            not_verifiable_range: Some(StarknetBlockNumber(119802)..StarknetBlockNumber(148428)),
-            fallback_sequencer_address: SequencerAddress(
-                StarkHash::from_hex_str(
-                    "0x46a89ae102987331d369645031b49c27738ed096f2789c24449966da4c6de6b",
-                )
-                .unwrap(),
-            ),
-        };
+    const TESTNET_METAINFO: BlockHashMetaInfo = BlockHashMetaInfo {
+        first_0_7_block: StarknetBlockNumber(47028),
+        not_verifiable_range: Some(StarknetBlockNumber(119802)..StarknetBlockNumber(148428)),
+        fallback_sequencer_address: SequencerAddress(starkhash!(
+            "046a89ae102987331d369645031b49c27738ed096f2789c24449966da4c6de6b"
+        )),
+    };
 
-        static ref MAINNET_METAINFO: BlockHashMetaInfo = BlockHashMetaInfo {
-            first_0_7_block: StarknetBlockNumber(833),
-            not_verifiable_range: None,
-            fallback_sequencer_address: SequencerAddress(
-                StarkHash::from_hex_str(
-                    "0x21f4b90b0377c82bf330b7b5295820769e72d79d8acd0effa0ebde6e9988bc5",
-                )
-                .unwrap(),
-            ),
-        };
-    }
+    const MAINNET_METAINFO: BlockHashMetaInfo = BlockHashMetaInfo {
+        first_0_7_block: StarknetBlockNumber(833),
+        not_verifiable_range: None,
+        fallback_sequencer_address: SequencerAddress(starkhash!(
+            "021f4b90b0377c82bf330b7b5295820769e72d79d8acd0effa0ebde6e9988bc5"
+        )),
+    };
 
     pub fn for_chain(chain: Chain) -> &'static BlockHashMetaInfo {
         match chain {

@@ -385,18 +385,16 @@ pub enum Chain {
     Goerli,
 }
 
-lazy_static::lazy_static! {
-    static ref MAINNET_CHAIN_ID: StarkHash = StarkHash::from(0x534e5f4d41494eu128);
-    static ref GOERLI_CHAIN_ID: StarkHash = StarkHash::from(0x534e5f474f45524c49u128);
-}
+const MAINNET_CHAIN_ID: StarkHash = StarkHash::from_u128(0x534e5f4d41494eu128);
+const GOERLI_CHAIN_ID: StarkHash = StarkHash::from_u128(0x534e5f474f45524c49u128);
 
 impl Chain {
-    pub fn starknet_chain_id(&self) -> &'static StarkHash {
+    pub const fn starknet_chain_id(&self) -> StarkHash {
         match self {
             // SN_MAIN
-            Chain::Mainnet => &MAINNET_CHAIN_ID,
+            Chain::Mainnet => MAINNET_CHAIN_ID,
             // SN_GOERLI
-            Chain::Goerli => &GOERLI_CHAIN_ID,
+            Chain::Goerli => GOERLI_CHAIN_ID,
         }
     }
 }
